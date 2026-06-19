@@ -65,12 +65,13 @@ final class CyclePanelController: NSObject {
         currentApplication = application
         state.setApplication(application)
         
-        // Do not show the switcher if only one option (one window, or focus/open app)
-       if state.items.count == 1 {
-           state.selectedIndex = 0
-           self.activateSelectedWindow()
-           return
-       }
+        // Instant switch if the user opted in and there is one actual window
+        if UserDefaults.standard.string(forKey: "instantSwitch") == "whenOnlyOneWindowOpen",
+           state.items.count == 1,
+           case .window = state.currentItem {
+            activateSelectedWindow()
+            return
+        }
         
         // If starting index is provided (e.g., already on that app), use it
         if startIndex > 0 && startIndex < state.items.count {

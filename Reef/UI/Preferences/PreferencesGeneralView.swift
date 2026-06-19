@@ -15,6 +15,7 @@ struct PreferencesGeneralView: View {
     @AppStorage("showActiveProfileInMenuBar") private var showActiveProfileInMenuBar = false
     @AppStorage("appearance") private var appearance = "system"
     @AppStorage("defaultNumberOrder") private var defaultNumberOrder = "rightHanded"
+    @AppStorage("instantSwitch") private var instantSwitch = "never"
     
     @State private var hasAccessibilityPermission = AXIsProcessTrusted()
     
@@ -58,6 +59,12 @@ struct PreferencesGeneralView: View {
 //                Toggle("Hide menubar icon", isOn: $hideMenubarIcon)
                 Toggle("Show active profile in menu bar", isOn: $showActiveProfileInMenuBar)
 
+                Picker("Instant switch:", selection: $instantSwitch) {
+                    Text("Never").tag("never")
+                    Text("When only one window open").tag("whenOnlyOneWindowOpen")
+                }
+                .pickerStyle(.menu)
+
                 Picker("Default number order:", selection: $defaultNumberOrder) {
                     Text("Right handed (0, 9, ..., 1)").tag("rightHanded")
                     Text("Left handed (1, ..., 9, 0)").tag("leftHanded")
@@ -68,7 +75,7 @@ struct PreferencesGeneralView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(height: hasAccessibilityPermission ? 186 : 256)
+        .frame(height: hasAccessibilityPermission ? 224 : 294)
         .onReceive(timer) { _ in
             // Poll for permission changes
             hasAccessibilityPermission = AXIsProcessTrusted()
