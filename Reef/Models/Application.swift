@@ -184,12 +184,6 @@ class Application {
             return true
         }
         
-        // Official fallback: if the app is already running, just focus/activate it.
-        if isRunning {
-            activate()
-            return true
-        }
-        
         do {
             _ = try await reopen(configuration: Self.defaultOpenConfiguration(activates: true))
             return true
