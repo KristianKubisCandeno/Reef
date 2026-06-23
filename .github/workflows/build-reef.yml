@@ -1,0 +1,45 @@
+name: Build Reef v1.1.0
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch or tag to build"
+        required: true
+        default: "v1.1.0"
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Check out Reef
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - name: Select latest Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode.app
+          xcodebuild -version
+
+      - name: Build Reef
+        run: |
+          xcodebuild -project Reef.xcodeproj \
+            -scheme Reef \
+            -configuration Release \
+            -derivedDataPath DerivedData \
+            CODE_SIGN_IDENTITY="-" \
+            DEVELOPMENT_TEAM="" \
+            build
+
+      - name: Package Reef.app
+        run: |
+          mkdir -p output
+          cp -R DerivedData/Build/Products/Release/Reef.app output/
+          cd output && zip -r Reef-v1.1.0.zip Reef.app
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Reef-v1.1.0
+          path: output/Reef-v1.1.0.zip
