@@ -28,6 +28,22 @@ jobs:
             DEVELOPMENT_TEAM="" \
             build
 
+      - name: Re-sign app with disable-library-validation entitlement
+        run: |
+          cat > /tmp/reef.entitlements <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>com.apple.security.cs.disable-library-validation</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+          codesign --force --sign - --options runtime \
+            --entitlements /tmp/reef.entitlements \
+            DerivedData/Build/Products/Release/Reef.app
+
       - name: Package Reef.app
         run: |
           mkdir -p output
