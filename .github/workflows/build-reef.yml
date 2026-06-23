@@ -2,20 +2,16 @@ name: Build Reef v1.1.0
 
 on:
   workflow_dispatch:
-    inputs:
-      ref:
-        description: "Branch or tag to build"
-        required: true
-        default: "v1.1.0"
 
 jobs:
   build:
     runs-on: macos-latest
     steps:
-      - name: Check out Reef
+      - name: Check out Reef v1.1.0
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.ref }}
+          repository: gouwsxander/Reef
+          ref: v1.1.0
 
       - name: Select latest Xcode
         run: |
